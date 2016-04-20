@@ -1,0 +1,30 @@
+{
+    "vars" : {
+		"dateFormat":"%d/%m/%Y %H:%M",
+		"legendLabels" : ["Legend label 1", "Legend label 2"],
+		"yAxisLabel":"%",
+		"yAxisScale":"auto_min_max",   
+		"yAxisBreak": true,
+		"yAxisBreak_sm_md_lg": [65,65,65],
+		
+		"margin_sm": [25, 50, 50, 30],
+		"margin_md": [25, 50, 50, 30],
+		"margin_lg": [25, 100, 75, 30],
+		
+		"aspectRatio_sm" : [2,1],
+		"aspectRatio_md" : [2,1],
+		"aspectRatio_lg" : [2,1],
+		"legend" : [
+					["#d73027","#f46d43","#fdae61","#fee08b","#ffffbf","#d9ef8b","#a6d96a","#66bd63","#1a9850"],
+					["9+","8","7","6","5","4","3","2","1"]
+				],
+		"mobileBreakpoint" : 610, 
+		"xAxisTextFormat_sm_md_lg" : ["%y", "%Y", "%b %y"], 			
+		"x_num_ticks_sm_md_lg" : [7,17,17],    
+		"y_num_ticks_sm_md_lg" : [6,8,10],
+		"centre_line" : true,
+		"centre_line_value" : 0
+	}
+}
+
+

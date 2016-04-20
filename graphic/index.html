@@ -1,0 +1,2716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600|Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <title>0010 - Flights with Pending Events - PoC</title>
+
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <link rel="stylesheet" href="../lib/style-chosen.css">
+    <!-- 
+		<link rel="stylesheet" href="../lib/globalStyle.css" />
+	-->
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/jquery-ui-1.10.4.custom.min.css">    
+    <link rel="stylesheet" href="../lib/style-chosen.css">
+	
+    <style type="text/css">
+
+	
+	
+		/* global styles */
+		html, body, div, span, applet, object, iframe,
+		h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+		a, abbr, acronym, address, big, cite, code,
+		del, dfn, em, img, ins, kbd, q, s, samp,
+		small, strike, strong, sub, sup, tt, var,
+		b, u, i, center,
+		dl, dt, dd, ol, ul, li,
+		fieldset, form, label, legend,
+		table, caption, tbody, tfoot, thead, tr, th, td,
+		article, aside, canvas, details, embed, 
+		article, aside, canvas, details, embed, 
+		article, aside, canvas, details, embed, 
+		figure, figcaption, footer, header, hgroup, 
+		menu, nav, output, ruby, section, summary,
+		time, mark, audio, video
+		{
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+		
+		
+		
+		html
+		{
+			-webkit-text-size-adjust: none; /* prevent font scaling in landscape */
+		}
+
+
+
+		body /* required */
+		{
+			font-family: 'Open Sans', sans-serif;
+			font-weight:400;
+		}
+		
+		
+		
+		a, /* required */
+		a:link,
+		a:visited
+		{
+			color: #4774CC;
+			text-decoration: none;
+		}
+		
+		
+		
+		a:hover,
+		a:active
+		{
+			opacity: 0.7;
+		}
+		
+		
+				
+		.footer
+		{
+			font-size: 14px;
+			color: #808080;
+			font-weight:100;
+			padding-bottom:15px;
+		}
+		
+		
+		
+		#graphic1:before,
+		#graphic1:after
+		{
+			content: " ";
+			display: table;
+		}
+
+		
+		
+		
+		#graphic2:before,
+		#graphic2:after
+		{
+			content: " ";
+			display: table;
+		}
+		
+		
+		
+		#graphic3:before,
+		#graphic3:after
+		{
+			content: " ";
+			display: table;
+		}
+		
+		
+		
+		#graphic4:before,
+		#graphic4:after
+		{
+			content: " ";
+			display: table;
+		}
+		
+		
+		
+		#graphic1:after  { clear: both; }
+		#graphic2:after  { clear: both; }
+		#graphic3:after  { clear: both; }
+		#graphic4:after  { clear: both; }
+		
+		
+
+		#graphic1 img
+		{
+			max-width: 100%;
+			height: auto;
+		}
+		
+		
+
+		.svgRect
+		{
+			fill: white;	
+		}
+		
+		
+		
+		/* y-axis tick labels */
+	   #graphic .axis,  #graphic1 .axis, #graphic2 .axis, #graphic3 .axis, #graphic4 .axis /* required */
+		{
+			font-size: 10px;
+			fill: #666;
+		}
+		
+		
+		
+		/* x-axis baseline; not to be confused with centreline. Can consider overlaying this with #centreline */
+		#graphic .axis path, #graphic1 .axis path, #graphic2 .axis path, #graphic3 .axis path, #graphic4 .axis path  /* required */
+		{
+			fill: none;
+			stroke: #666;
+			shape-rendering: crispEdges;
+		}
+		
+		
+		
+		/* axis ticks */
+		#graphic .axis line , #graphic1 .axis line , #graphic2 .axis line, #graphic3 .axis line, #graphic4 .axis line, #graphic5 .axis line, #graphic6 .axis line/* required */
+		{
+			fill: none;
+			stroke: #ccc;
+			shape-rendering: crispEdges;
+		}
+		
+		
+		
+		/* y-axis line path */
+		#graphic .axis.y path , #graphic1 .axis.y path , #graphic2 .axis.y path , #graphic3 .axis.y path  , #graphic4 .axis.y path  , #graphic5 .axis.y path , #graphic6 .axis.y path  /* required */
+		{
+			display: none;
+		}
+		
+	
+		
+		/* y-axis full width grid lines */
+		#graphic .grid .tick, #graphic1 .grid .tick , #graphic2 .grid .tick, #graphic3 .grid .tick, #graphic4 .grid .tick, #graphic5 .grid .tick, #graphic6 .grid .tick /* required */
+		{
+			stroke:#CCC;
+			stroke-width: 1px;
+			opacity: 0.75;
+			shape-rendering: crispEdges;
+		}
+		
+				
+			
+		/* legend elements */
+		#graphic1 .key li, #graphic2 .key li, #graphic3 .key li, #graphic4 .key li/* required */
+		{
+			display: inline-block;
+			margin: 0 18px 0 0;
+			padding: 0;
+			line-height: 15px;
+		}
+		
+		
+
+		/* legend coloured elements */
+		#graphic1 .key b, #graphic2 .key b, #graphic3 .key b, #graphic4 .key b/* required */
+		{
+			display: inline-block;
+			width: 35px;
+			height: 15px;
+			margin-right: 6px;
+			float: left;
+			background-color:none;
+			margin-top:1px;
+		}
+
+				
+		
+		/* legend element labels */
+		#graphic1 .key label, #graphic2 .key label, #graphic3 .key label, #graphic4 .key label/* required */
+		{
+			white-space: nowrap;
+			font-size: 12px;
+			color: #333;
+			font-weight: normal;
+		}
+
+		
+		
+		/* y-axis units label */
+		#graphic1 .unit, #graphic2 .unit, #graphic3 .unit, #graphic4 .unit, #graphic5 .unit, #graphic6 .unit/* required */
+		{
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 12px;
+			fill: #333333;
+			text-align: left;/*
+			width:130px;*/
+			height:20px;
+			display:block;
+			float:none;
+			
+		}
+		 
+		 
+		 
+		#centreline
+		{
+			stroke:#666;
+			stroke-width:3px;		
+		}
+		
+		
+	
+		/* y- and x-axis tick text *//* BOTH MUST BE NONE */
+		.domain
+		{
+			fill:none;
+			stroke:none;	
+		}
+		
+		
+		
+		.circles
+		{
+			float:left;	
+		}
+		
+		
+		
+		.tickMinor .tick
+		{
+			stroke-width:0px;
+			stroke:none;
+			fil:none;
+		}
+		
+		
+
+		.grid .tick
+		{
+			stroke: red;
+			opacity: 0.7;
+		}
+		
+		
+		
+		.grid path
+		{
+			  stroke-width: 1px;
+		}
+	
+	
+	
+		/* hierachical bars */
+		#clear
+		{
+			color:white;
+			background-color:red;
+		}
+
+		
+		
+		.tick
+		{
+			pointer-events: none;
+		}
+		
+		
+	
+		#header
+		{
+			height:50px;
+		}
+		
+		
+		
+		rect.background
+		{
+		  fill: white;
+		}
+		
+		
+		
+		text
+		{
+		  font: 10px sans-serif;
+		}
+		
+		
+		
+		rect
+		{
+			opacity:0.75
+		}
+		
+		
+		
+		.active
+		{
+			background-color:#025aa5;
+			border-color:white;
+			color:#fff;
+			font-weight:bold;
+			font-family:helvetica;		
+		}
+		
+		
+		
+		.default
+		{
+			background-color:#0275d8;
+			border-color:white;
+			color:#fff;
+			font-weight:bold;
+			font-family:helvetica;		
+		}
+		
+		
+		
+		.rightgroup
+		{
+			position:absolute;
+			right:0px;
+		}
+		
+		
+		
+		.infoText
+		{
+			font-size:11px;
+			color:#666;
+			margin:5px;
+		}
+		/* end CSS for hierarchical bars */
+	
+
+	
+		.overlay
+		{
+			fill: none;
+			pointer-events: all;
+		}
+			
+			
+			
+		.tooltip
+		{
+			text-decoration:none;
+			position:relative;
+		}
+		
+		
+		
+		.tooltip span
+		{
+			display:none;
+		}
+		
+		
+		
+		.tooltip:hover span 
+		{
+			display:block;
+			position:fixed;
+			overflow:hidden;
+		}	
+			
+			
+			
+		#tooltip
+		{
+			text-decoration:none;
+			position:relative;
+		}
+		
+		
+		
+		#tooltip span
+		{
+			display:none;
+		}
+		
+		
+		
+		#tooltip:hover span {
+			display:block;
+			position:fixed;
+			overflow:hidden;
+		}	
+		
+		
+	
+		#valueBG
+		{
+			position:absolute;
+			background-color:#202020;
+			opacity:1;
+			width:300px;
+			height:200px;
+			display:inline;
+			border:solid;
+			border-radius:0px;
+			border-width:2px;
+			color:#202020;		
+		}	
+	
+	
+	
+		.row0
+		{
+			height:0px;
+		}
+	
+		.button
+		{
+			position:absolute;
+			right:0px;
+		}
+	
+	
+	
+		.paths
+		{
+			clip-path: url(#clip);
+			pointer-events:none;
+			stroke-width:2px;
+			stroke:#0d78a7;
+			fill:none;
+		}
+	
+	
+	
+		.paths2
+		{
+			clip-path: url(#clip2);
+			pointer-events:none;
+			stroke-width:2px;
+			stroke:#0d78a7;
+			fill:none;
+		}
+		
+		
+		
+		.area
+		{
+		  fill: #abcdef;
+		  stroke: none;
+		  stroke-width:2px;
+		  clip-path: url(#clip);
+		  opacity:0.50;
+		}
+	
+	
+	
+		.maximumAgeBlocks
+		{
+		  fill: #abcdef;
+		  clip-path: url(#clip);
+		  opacity:0.50;
+		  border-style:solid;
+		  border-width:2px;
+		}
+	
+	
+	
+		.NumberFlightsBlocks
+		{
+		  fill: #abcdef;
+		  clip-path: url(#clip);
+		  opacity:0.50;
+		  border-style:solid;
+		  border-width:2px;
+		  border-color:red;
+		}
+	
+	
+	
+		.blocks
+		{
+		  fill: #abcdef;
+		  clip-path: url(#clip2);
+		  opacity:0.50;
+		  border-style:solid;
+		  border-width:2px;
+		}
+		
+		
+		
+		.area1
+		{
+		  fill: #abcdef;
+		  clip-path: url(#clip);
+		  opacity:0.75;
+		}
+		
+		
+
+		.axis path,
+		.axis line
+		{
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+		
+		
+
+		.grid-background
+		{
+			fill: none;
+		}
+		
+		
+
+		.grid line,
+		.grid path
+		{
+			fill: none;
+			stroke: #fff;
+			shape-rendering: crispEdges;
+		}
+		
+		
+
+		.grid .major.tick line
+		{
+			stroke:red;
+			stroke-opacity: 0.5;
+			stroke-width:2px;
+		}
+
+		
+
+		.brush .extent {
+			stroke: #fdbb30;
+			stroke-width: 2.0px;
+			fill-opacity: .125;
+			shape-rendering: crispEdges;
+			opacity: 1.0;
+		}	
+		
+		
+		
+		#hierarchyTitle
+		{
+			position:relative;
+			top:7px;
+			right:0px;
+			font-size:11pt;
+			display:inline;
+			vertical-align:middle
+			text-anchor:end;
+			font-weight:bold;
+		}
+		
+		
+		
+		#title
+		{
+			font-size:24px;		
+		}
+		
+		
+		
+		.center
+		{
+			margin: auto;
+			width: 99%;
+			border: 0px solid #CCC;
+			padding: 10px;
+			font-size:35px;
+			vertical-align:middle;
+			font-weight:bold;
+			text-align: center;
+		}
+		
+		
+		
+		.centerBtns
+		{
+			margin: auto;
+			width: 102%
+			border: 0px solid #CCC;
+			padding: 0px;
+			vertical-align:middle;
+		}	
+
+		
+		
+		.tickLabelMajor
+		{
+			stroke-width:2px;
+			stroke:none;
+			fill:#0d78a7;
+			font-weight:900;
+		}
+		
+		
+		
+		.tickLabelMinor{
+			stroke-width:1px;
+			stroke:none;
+			fill:#666;
+		}
+		
+		
+		
+		#buttons
+		{
+			display:none;
+			
+		}
+		
+		
+		
+		.loadedText{
+			fill:#666;
+			stroke:none;
+			font-size:12px;
+			font-weight:bold;
+		}
+		
+					
+		
+		#infoBox
+		{
+			position:absolute;
+			right:0px;
+			top:0px;
+			width:300px;
+			height:auto;
+			background-color:white;
+			border-style:solid;
+			border-width:1px;
+			border-color:#CCC;
+			border-radius:10px;	
+			display:none;		
+		}
+	
+		
+    
+    </style>
+	
+	
+</head>
+<body>
+
+	<div class="container-fluid">
+	
+		<div class="col-md-12">		
+			</br>
+			<div class="btn-group" id="controls" role="group" style="margin-left: 25px;">
+				<button type="button" class="btn btn-primary-outline default" id="print" onClick="javascript:window.print()">Print</button>
+				<button type="button" class="btn btn-primary-outline default" id="help" onClick="help(this)">Help</button>		
+			</div>		
+			</br>
+			<div class="row center" id="row">FLIGHTS WITH PENDING EVENTS</div>
+			
+		</div>
+	
+		<div class="col-md-12">
+
+			<div class="row centerBtns" id="row0">
+			
+				</br>
+				
+				<div class="btn-group" id="offices" role="group" style="margin-left: 25px;">
+				  <button type="button" class="btn btn-primary-outline default" id="FDSL" onClick="selectOffice(this)">FDSL</button>
+				  <button type="button" class="btn btn-primary-outline default" id="FDSI" onClick="selectOffice(this)">FDSI</button>
+				</div>
+				
+				<div class="btn-group" id="timeIntervals" role="group" style="margin-left: 25px;">
+				  <button type="button" class="btn btn-primary-outline default" id="CD" onClick="LW(this)">Current Day</button>
+				  <button type="button" class="btn btn-primary-outline default" id="LD" onClick="LW(this)">Last Day</button>
+				  <button type="button" class="btn btn-primary-outline default" id="CW" onClick="LW(this)">Current Week</button>
+				  <button type="button" class="btn btn-primary-outline default" id="L7D" onClick="LW(this)">Last 7 Days</button>
+				  <button type="button" class="btn btn-primary-outline default" id="CM" onClick="LW(this)">Current Month</button>
+				  <button type="button" class="btn btn-primary-outline default" id="LM" onClick="LW(this)">Last Month</button>
+				</div>
+				
+<!--				
+				<div class="btn-group" id="controls" role="group" style="margin-left: 25px;">
+					<button type="button" class="btn btn-info" id="print" onClick="javascript:window.print()">Print</button>
+					<button type="button" class="btn btn-info" id="help" onClick="">Help</button>		
+				</div>
+-->				
+				
+			</div>
+			
+		</div>
+	
+		<div class="col-md-12" >	
+					
+			<div class="row" id="row">
+				
+				<div  id="header">					
+				</div>		
+
+			</div>
+				
+		</div>
+		
+	
+		<div class="col-md-12" >	
+					
+			<div class="row" id="row1">
+			
+					<div class="col-md-6" id="graphic"></div>
+					<div class="col-md-6" id="graphic1"></div>
+			
+				</div>
+		
+		</div>
+
+			
+
+		<div class="col-md-12">	
+					
+			<div class="row show" id="row2">
+			
+				<div class="col-md-12" id="graphic2"></div>
+				
+			</div>
+		
+		</div>	
+
+		<div class="col-md-12" >	
+		
+			<div class="row hidden" id="row3">
+				
+					<div class="col-md-6" id="graphic3"></div>		
+						
+						<div class="btn-group leftgroup" role="group" id="buttons" aria-label="Basic example">
+							<button type="button" id="category" class="btn btn-primary-outline default" onClick="clickBtn(this)">Category</button>
+							<button type="button" id="value" class="btn btn-primary-outline active" onClick="clickBtn(this)">Value</button>
+							<button type="button" id="clear" class="btn btn-default" onClick="revert(this)">Clear</button>			
+						</div>
+						
+						</br>
+						<div class="col-md-6" id="graphic4">
+						
+						</div>				
+			
+			</div>
+			
+		</div>
+	
+	</div>	
+	   
+    <script src="../lib/jquery.js" type="text/javascript"></script>
+    <script src="../lib/d3.v3.5.min.js" type="text/javascript"></script>
+    <script src="../lib/modernizr.svg.min.js" type="text/javascript"></script>
+    <script src="../lib/pym.js" type="text/javascript"></script>
+	<script src="../lib/bootstrap.min.js"></script>
+	<script src="../lib/jquery-ui-1.10.4.custom.min.js"></script>    
+	<script src="../lib/jquery.ui.labeledslider.js"></script>
+	<script src="../lib/chosen.jquery.js" type="text/javascript"></script>
+	<script src="../lib/queue.js" type="text/javascript"></script>
+	
+    <script>
+
+		var header = $('#header');
+		var title = $('#title');
+		var graphic = $('#graphic');
+		var graphic1 = $('#graphic1');
+		var graphic2 = $('#graphic2');
+		var graphic3 = $('#graphic3');
+		var graphic4 = $('#graphic4');
+		var pymChild = null;
+		var barData = {};
+		var coords = [];
+		var data_obj = [];
+		var timeDomain = [];
+		var dataToUse = [];
+		var offices = [];
+		var HourArray = -1;
+		var barSelected = -1;
+		var SLA = 8;	
+		var use_Offset = false;
+		var parseDate = d3.time.format("%b %Y").parse;
+		var formatTime = d3.time.format("%H:%M");
+		var dateFormat = "%H:%M";	
+		var timeFormat = d3.time.format("%d/%m/%Y %H:%M");
+		var selectedOffice = "Flight Data Services Ltd";			
+		var xC; // Get the horizontal coordinate
+		var yC; // Get the vertical coordinate
+		var brush;
+		var chart_width;
+		var set_brushExtent;
+		var set_brushRangeExtent
+		var set_brushRangeWidth;
+		var x;
+		var	x1;
+		var	x2;
+		var	x3;
+		var	x4;
+		var	y;
+		var	y1;
+		var	y2;
+		var	y3;
+		var	y4;
+		var xAxis;
+		var	xAxis1;
+		var	xAxis2;			
+		var	yAxis;
+		var	yAxis1;
+		var margin;
+		var height;
+		var threshold_md;
+		var threshold_sm; 
+		var svg3;
+		var barData;
+		var eye;
+				
+				
+				
+				
+				
+		// standard window.resize function to mimic reacting to window resizing ...
+		$(window).resize(function(){
+					
+			// call pym function to act on resize		
+			pymChild = new pym.Child({ renderCallback: drawGraphic});
+		});		
+		
+		
+
+		
+		
+		function drawGraphic(width) {
+								
+			d3.select("#svg3").remove();
+			
+			threshold_md = 788;
+			threshold_sm = FDS.vars.mobileBreakpoint; 
+		  
+		  	//set variables for chart dimensions dependent on width of #graphic
+		    if (graphic.width() < threshold_sm) {       
+
+				console.log("threshold_sm");
+				
+				margin = {top: FDS.vars.margin_sm[0], right: FDS.vars.margin_sm[1], bottom: FDS.vars.margin_sm[2], left: FDS.vars.margin_sm[3]}; 
+				chart_width = graphic.width() - margin.left - margin.right;
+				height = Math.ceil((chart_width * FDS.vars.aspectRatio_sm[1]) / FDS.vars.aspectRatio_sm[0]) - margin.top - margin.bottom;
+			
+		    } else if (graphic.width() < threshold_md){
+			
+				console.log("threshold_md");
+				
+				margin = {top: FDS.vars.margin_md[0], right: FDS.vars.margin_md[1], bottom: FDS.vars.margin_md[2], left: FDS.vars.margin_md[3]}; 
+				chart_width = graphic.width() - margin.left - margin.right;
+				height = Math.ceil((chart_width * FDS.vars.aspectRatio_md[1]) / FDS.vars.aspectRatio_md[0]) - margin.top - margin.bottom;
+				
+		  	} else {
+			
+				console.log("threshold_lg");
+				
+				margin = {top: FDS.vars.margin_lg[0], right: FDS.vars.margin_lg[1], bottom: FDS.vars.margin_lg[2], left: FDS.vars.margin_lg[3]}
+				chart_width = graphic.width() - margin.left - margin.right;
+				height = Math.ceil((chart_width * FDS.vars.aspectRatio_lg[1]) / FDS.vars.aspectRatio_lg[0]) - margin.top - margin.bottom;
+			}
+			
+			
+		    // clear out existing graphics
+		    graphic.empty();
+		    graphic1.empty();
+		    graphic2.empty();
+		   // graphic3.empty();
+		    header.empty();
+			
+			d3.select("#title").attr("position" , "absolute").attr("left" , parseInt(chart_width/2) + "px");
+
+		    //create svg for chart
+		    var svg = d3.select('#graphic')
+						.append('svg')
+						.attr("class", "mySVGs")
+						.attr("id", "svg")
+						.attr("width", chart_width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		    //create svg for chart
+		    var svg1 = d3.select('#graphic1')
+						.append('svg')
+						.attr("class", "mySVGs")
+						.attr("id", "svg1")
+						.attr("width", chart_width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+						
+
+			console.log("barSelected: " + barSelected)						
+				
+
+				//create svg for chart
+				var svg2 = d3.select('#graphic2')
+							.append('svg')
+							.attr("class", "mySVGs")
+							.attr("id", "svg2")
+							.attr("width", graphic2.width()/* + margin.left + margin.right*/)
+							.attr("height", height/2 + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+								
+			//if ( barSelected == -1 ) {
+						
+				//create svg for chart
+				/*var */ 
+				/* svg3 = d3.select('#graphic3')
+							.append('svg')
+							.attr("class", "mySVGs")
+							.attr("id", "svg3")
+							.attr("width", chart_width + margin.left + margin.right)
+							.attr("height", (height) + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");					
+*/							
+			//}// end if ... 
+			
+			if ( barSelected != -1 ) {
+
+				console.log("barSelected: " + barSelected)
+				drawBarChart(barData , eye);
+			} // end if ... 
+							
+												
+			
+			x = d3.time.scale().range([0, chart_width]);
+			x1 = d3.time.scale().range([0, chart_width]);
+			x2 = d3.time.scale().range([0, (graphic2.width() - margin.left - margin.right) ]);	
+			x3 = d3.scale.ordinal().rangeRoundBands([0, chart_width/2], .1);
+
+			 xAxis = d3.svg.axis().scale(x).orient("bottom");
+			xAxis1 = d3.svg.axis().scale(x1).orient("bottom");
+			xAxis2 = d3.svg.axis().scale(x2).orient("bottom");							
+		    xAxis3 = d3.svg.axis().scale(x3).orient("bottom").tickFormat(function(d,i) { return d; });
+						
+			y = d3.scale.linear().range([height, 0]);
+			y1 = d3.scale.linear().range([height, 0]);
+			y2 = d3.scale.linear().range([height/2, 0]);
+		    y3 = d3.scale.linear().range([ (height*1), 0]);								
+			
+			yAxis = d3.svg.axis().scale(y).orient("left");
+			yAxis1 = d3.svg.axis().scale(y1).orient("left");
+		
+								
+		    //gridlines
+		    var x_axis_grid = function() { return xAxis; }
+		    var y_axis_grid = function() { return yAxis; }
+		    var y1_axis_grid = function() { return yAxis1; }
+			
+			
+			d3.select("body")
+				.append('div')
+					.attr("id","infoBox")
+					.style("display", "none")
+				.append('img')
+					.attr('src', "../images/close.png")
+					.attr('float', "right")
+					.attr('position', "absolute")
+					.attr('left', "20px")
+					.attr('top', "20px")
+					.attr('width', "20px")
+					.attr('height', "20px")
+					.style('padding', "5px")
+					.on('click', infoHide);
+
+				
+				
+		var para1 = "Click on an individual data bar to move down on level in the hierachy";
+		var para2 = "Click away fom the data bars within the graph area to return up on level";
+		var para3 = "Click on an individual data label to fix highlighting on it and the associated data bar to track its position";
+		var para4 = "Hover over a data bar to ascertain its 'child' component values";
+		var para5 = "Click on 'Category' ['Value] to sort data bars according to their data label [data value]";
+		var para6 = "Click on 'Clear' to clear the current view of all highlighting";
+	
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText1').text(para1);
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText2').text(para2);
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText3').text(para3);
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText4').text(para4);
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText5').text(para5);
+		d3.select('#infoBox').append('li').attr('class', 'infoText').attr('id', 'infoText6').text(para6);
+						
+			
+			
+		    //create svg for chart
+		    var headerSvg = d3.select('#header')
+						.append('svg')
+						.attr("class", "mySVGs")
+						.attr("id", "svg0")
+						.attr("width", header.width() )
+						.attr("height", 75 );
+
+			var legend = headerSvg.append("g")
+				.attr("class", "legend")
+				.attr("id", "legend")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");						
+								
+			legend.append("text")
+					.attr("class" , "legendTitle")
+					.attr("id" , "legendTitle")
+					.attr("x", header.width() - (FDS.vars.legend[0].length*30) - margin.right )
+					.attr("y", 17)
+					.style("text-anchor", "end")
+					.style("font-size", "10pt")
+					.style("font-weight", "bold")
+					.text(function(d,i){
+						if (graphic.width() < threshold_sm) { return ''; }
+						else if (graphic.width() < threshold_md) { return ''; }
+						else { return 'Hours past SLA limit'; }
+					});
+						
+			legend.selectAll(".legendBlocks")
+				.data(FDS.vars.legend[0])
+				.enter()
+				.append("rect")
+					.attr("class", "legendBlocks")
+					.attr("id", function(d,i){ return "legendBlock" + [FDS.vars.legend[0].length - i]; })
+					.attr("x", function(d,i){ return ((header.width()) - i*30) - margin.right; })
+					.attr("y", 0)
+					.attr("width", 26 )
+					.attr("height", 26 )
+					.style("fill", function(d,i){ return FDS.vars.legend[0][i]; })
+					.style("stroke", function(d,i){ return FDS.vars.legend[0][i]; })
+					.style("stroke-width", "2px" )
+					.style("opacity" , 1.0);
+					
+			legend.selectAll(".legendText")
+				.data(FDS.vars.legend[1])
+				.enter()
+				.append("text")
+					.attr("class", "legendText")
+					.attr("id", function(d,i){ return "legendText" + i; })
+					.attr("x", function(d,i){ return ((header.width()) - i*30) - margin.right + 11; })
+					.attr("y", 17)
+					.style("text-anchor", "middle")
+					.style("stroke", "none")
+					.style("fill", "black")
+					.style("font-size", "12px")
+					.style("font-weight", "bold")
+					.text(function(d,i){ return d; });
+					
+/*					
+			d3.select("#legend")
+				.append("rect")
+				.attr("class" , "highlight")
+				.attr("id" , "legendClassHighlight")
+				.attr("x" , (header.width()/2) + 0*30)
+				.attr("y" , 29)
+				.attr("width" , 24)
+				.attr("height" , 1)
+				.style("stroke-width", "3px" )
+				.style("fill" , "#C0C0C0")
+				.style("stroke" , "#C0C0C0")
+				.style("display" , "none");
+*/				
+				
+			legend.append("text")
+					.attr("id" , "timeRangeString")
+					.attr("transform" , "translate(" + (margin.left) + ",17)")
+					.style("font-size" , "10pt")
+					.style("font-weight" , "bold")
+					.text("");
+			
+			brush = d3.svg.brush()
+				.x(x2)
+				.on("brush", brushed)
+				.on("brushend", brushended);
+				
+
+			var area = d3.svg.area()
+				.interpolate("monotone")
+				.x(function(d) { return x(d.date); })
+				.y0(height)
+				.y1(function(d) { return y(d.data.Maximum); });
+
+			var area1 = d3.svg.area()
+				.interpolate("monotone")
+				.x(function(d) { return x1(d.date); })
+				.y0(height)
+				.y1(function(d) { return y1(d.data["Number of Flights"]); });
+
+				
+/*
+			var area2 = d3.svg.area()
+				.interpolate("monotone")
+				.x(function(d) { return x2(d.date); })
+				.y0(height)
+				.y1(function(d) { return y2(d.data.Maximum); });
+*/				
+
+			svg.append("defs").append("clipPath")
+				.attr("id", "clip")
+			  .append("rect")
+				.attr("width", chart_width)
+				.attr("height", height);
+
+
+			var focus = svg.append("g")
+				.attr("class", "focus")
+				.attr("id", "focus")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.on("mouseout", function(d,i) {
+				
+					if ( barSelected == -1 ) {
+									
+	//					<div class="row hidden" id="row3">
+//						var row3_class = d3.select("#row3").attr("class");
+//						row3_class = row3_class.replace("hidden", "show");
+//						d3.select("#row3").attr("class", row3_class);	
+						
+	//					<div class="row hidden" id="row4">
+//						var row4_class = d3.select("#row4").attr("class");
+//						row4_class = row4_class.replace("show", "hidden");
+//						d3.select("#row4").attr("class", row4_class);	
+						
+						//ROW 2 ... 
+						var row2_class = d3.select("#row2").attr("class");
+						row2_class = row2_class.replace("hidden", "show");
+						d3.select("#row2").attr("class", row2_class);
+						
+						//ROW 3 ... 
+						var row3_class = d3.select("#row3").attr("class");
+						row3_class = row3_class.replace("show", "hidden");
+						d3.select("#row3").attr("class", row3_class);						
+						
+					}// end if ...
+						
+				});
+				
+			var focus1 = svg1.append("g")
+				.attr("class", "focus1")
+				.attr("id", "focus1")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.on("mouseout", function(d,i) {
+				
+					if ( barSelected == -1 ) {
+									
+	//					<div class="row hidden" id="row3">
+//						var row3_class = d3.select("#row3").attr("class");
+//						row3_class = row3_class.replace("hidden", "show");
+//						d3.select("#row3").attr("class", row3_class);	
+						
+	//					<div class="row hidden" id="row4">
+//						var row4_class = d3.select("#row4").attr("class");
+//						row4_class = row4_class.replace("show", "hidden");
+//						d3.select("#row4").attr("class", row4_class);	
+						
+						//ROW 2 ... 
+						var row2_class = d3.select("#row2").attr("class");
+						row2_class = row2_class.replace("hidden", "show");
+						d3.select("#row2").attr("class", row2_class);
+						
+						//ROW 3 ... 
+						var row3_class = d3.select("#row3").attr("class");
+						row3_class = row3_class.replace("show", "hidden");
+						d3.select("#row3").attr("class", row3_class);						
+						
+					}// end if ...
+						
+				});
+				
+			var context = svg2.append("g")
+				.attr("class", "context")
+				.attr("id", "context")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+
+			var i = 0;
+	
+			
+			for ( var element in data_obj[selectedOffice] ) {								
+				dataToUse[i] = {};
+				
+				data_obj[selectedOffice][element].fullDate = element + ":00";
+				data_obj[selectedOffice][element].fullGMTDate = timeFormat.parse(element + ":00");				
+					
+				if ( i == 0 ) { timeDomain[0] = data_obj[selectedOffice][element].fullGMTDate; }
+				timeDomain[1] = data_obj[selectedOffice][element].fullGMTDate;
+				
+				dataToUse[i] = {
+					"date" : data_obj[selectedOffice][element].fullGMTDate ,
+					"data" : data_obj[selectedOffice][element]
+				};								
+					
+				
+				i++;
+				
+			} // end for ...
+							
+			data = dataToUse;	
+			
+			
+			
+			
+			
+			
+			x.domain(d3.extent(data.map(function(d,i) {	return d.date; })));	
+			x.domain([x.domain()[0] , d3.time.hour.offset(x.domain()[1], +1) ]);
+			x1.domain(x.domain());
+			x2.domain(x.domain());				
+			y.domain([0, d3.max(data.map(function(d) { return Math.ceil(d.data.Maximum/10)*10; }))]);
+			y1.domain([0, d3.max(data.map(function(d) { return Math.ceil(d.data["Number of Flights"]/500)*500; }))]);
+			y2.domain(y.domain());
+			
+
+			
+			
+			var flightCountByHours = [];
+			var flightCountByFleets = [];
+			var xAxisTickFormat_hour = "%H";
+			var xAxisTickFormat_althour = "%I%p";
+			var xAxisTickFormat_day = "%d/%m";
+			var nonWorkHours = [ "17:00", "09:00" ];
+
+						
+			var midnightCount = 0;
+						
+			xAxis.tickFormat(function(d,i) {
+				 midnightCount = 0;		
+				d3.select(this).attr("id" , "tickG1_" + i);	
+				var fmt = d3.time.format(xAxisTickFormat_hour);
+				
+				if ( (fmt(d)+":00") >  nonWorkHours[0] || (fmt(d)+":00") < nonWorkHours[1] ){
+										
+					if ( fmt(d) == "00" ) {		
+						d3.select("#" + this.id).attr("class" , "tickLabelMajor");	
+						var fmt = d3.time.format(xAxisTickFormat_day);
+						return fmt(d);
+					}
+					else {	
+						var fmt = d3.time.format(xAxisTickFormat_althour);
+						return fmt(d).replace("0",'');
+					}
+				}
+				else {					
+					d3.select("#" + this.id).attr("class" , "tickLabelMinor");						
+					var fmt = d3.time.format(xAxisTickFormat_althour);
+					var arr = d3.time.hour.range(d , timeDomain[1]);
+					
+					for(var i=0; i<arr.length; i++ ) {if ( arr[i].toString().substring(16,24) == "00:00:00" ) { midnightCount++; } }								
+					return fmt(d).replace("0",'') + "  (-" + (arr.length - (midnightCount*16) ) + ")";					
+				}
+			})
+			.tickSize(-height, -10)
+			.tickPadding(10);
+				
+
+				
+			xAxis1.tickFormat(function(d,i) {
+				 midnightCount = 0;		
+				d3.select(this).attr("id" , "tickG2_" + i);	
+				var fmt = d3.time.format(xAxisTickFormat_hour);
+				
+				if ( (fmt(d)+":00") >  nonWorkHours[0] || (fmt(d)+":00") < nonWorkHours[1] ){
+										
+					if ( fmt(d) == "00" ) {		
+						d3.select("#" + this.id).attr("class" , "tickLabelMajor");	
+						var fmt = d3.time.format(xAxisTickFormat_day);
+						return fmt(d);
+					}
+					else {	
+						var fmt = d3.time.format(xAxisTickFormat_althour);
+						return fmt(d).replace("0",'');
+					}
+				}
+				else {					
+					d3.select("#" + this.id).attr("class" , "tickLabelMinor");						
+					var fmt = d3.time.format(xAxisTickFormat_althour);
+					var arr = d3.time.hour.range(d , timeDomain[1]);
+					
+					for(var i=0; i<arr.length; i++ ) {if ( arr[i].toString().substring(16,24) == "00:00:00" ) { midnightCount++; } }								
+					return fmt(d).replace("0",'') + "  (-" + (arr.length - (midnightCount*16) ) + ")";					
+				}
+			})
+			.tickSize(-height, -10)
+			.tickPadding(10);
+				
+
+				
+			xAxis2.tickFormat(function(d,i) {
+				 midnightCount = 0;		
+				d3.select(this).attr("id" , "tickG3_" + i);	
+				var fmt = d3.time.format(xAxisTickFormat_hour);
+				
+				if ( (fmt(d)+":00") >  nonWorkHours[0] || (fmt(d)+":00") < nonWorkHours[1] ){
+										
+					if ( fmt(d) == "00" ) {		
+						d3.select("#" + this.id).attr("class" , "tickLabelMajor");	
+						var fmt = d3.time.format(xAxisTickFormat_day);
+						return fmt(d);
+					}
+					else {	
+						var fmt = d3.time.format(xAxisTickFormat_althour);
+						return fmt(d).replace("0",'');
+					}
+				}
+				else {					
+					d3.select("#" + this.id).attr("class" , "tickLabelMinor");						
+					var fmt = d3.time.format(xAxisTickFormat_althour);
+					var arr = d3.time.hour.range(d , timeDomain[1]);
+					
+					for(var i=0; i<arr.length; i++ ) {if ( arr[i].toString().substring(16,24) == "00:00:00" ) { midnightCount++; } }								
+					return fmt(d).replace("0",'') + "  (-" + (arr.length - (midnightCount*16) ) + ")";					
+				}
+			})
+			.tickSize(-height, -10)
+			.tickPadding(10);	
+			
+			
+		
+					
+				
+				
+			  
+			// TOP GRAPH ...
+			focus.append("g")
+				.attr("class", "x axis")
+				.attr("id", "xAxis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+							
+
+			focus.append("g")
+				.attr("class", "y axis")
+				.attr("id", "yAxis")
+				.call(yAxis)
+				.append("text")
+					.attr("transform" , "translate(-20,-20)")
+					.style("font-size" , "10pt")
+					.style("font-weight" , "bold")
+					.text("Maximum Age (working hours)");
+
+			FDS.yticks = focus.selectAll('#yAxis').selectAll('.tick');					 
+			FDS.yticks.append('svg:line')
+				.attr('y0',0)
+				.attr('y1',0)
+				.attr('x1',0)
+				.attr('x2',chart_width);
+				
+				
+			
+			FDS.focusColumnWidth = chart_width / data.length; 
+											
+			// Draw bars for variable on upper graph;
+			focus.selectAll(".maximumAgeBlocks")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("clip-path", "url(#clip)")
+				.attr("class", "maximumAgeBlocks")
+				.attr("id", function(d,i){ return "maximumAgeBlock" + i; })
+				.attr("x", function(d,i){
+					if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+					else { return x1(d.date); }
+				})
+				.attr("y", function(d,i){ return y(d.data.Maximum); })
+				.attr("width", function(d,i){ return (FDS.focusColumnWidth); })
+				.attr("height", function(d,i) { return Math.abs(y(d.data.Maximum) - y(0)); });
+
+			// Draw TRANSPARENT bars for variable on upper graph;
+			focus.selectAll(".transparentMaximumAgeBlocks")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("clip-path", "url(#clip)")
+				.attr("class", "transparentMaximumAgeBlocks")
+				.attr("id", function(d,i){ return "transparentMaximumAgeBlock" + i; })
+				.attr("x", function(d,i){
+					if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+					else { return x1(d.date); }
+				})
+				.attr("y", function(d,i){ return y(y.domain()[1]); })
+				.attr("width", function(d,i){ return (FDS.focusColumnWidth); })
+				.attr("height", function(d,i) { return y(0); })
+				.style("opacity", "0.0")
+				.on("mouseover", function(d,i){
+				
+					barData = d;
+					eye = i;
+
+					drawBarChart(barData , eye);
+/*	
+				
+					var max = -1;
+					var roundedMax = -1;
+					
+					if ( barSelected == -1 ) {
+					
+						d3.selectAll(".loadedText").text("");
+					
+						d3.select("#xAxis3").remove();
+						d3.select("#yAxis3").remove();	
+						d3.selectAll(".bars").remove();	
+						d3.selectAll(".loadedText").remove();
+
+						var row2_class = d3.select("#row2").attr("class");
+						row2_class = row2_class.replace("show", "hidden");
+						d3.select("#row2").attr("class", row2_class);	
+
+						var row3_class = d3.select("#row3").attr("class");
+						row3_class = row3_class.replace("hidden", "show");
+						d3.select("#row3").attr("class", row3_class);
+								
+						var x3domain = [];
+						bars = [];
+						var myStr = '';
+						
+						myStr = myStr + "Number of log entries: " + d.data["Number of Entries"] + "  ";
+						myStr = myStr + "Max. #hours past current: " + d.data.Maximum + "  ";
+						myStr = myStr + "Mean #hours past current: " + d.data.Mean.toFixed(1) + "  ";	
+						myStr = myStr + "Num flights outside SLA: " + d.data.NumFlightsOutsideSLA + "  ";	
+						myStr = myStr + "Num hours outside SLA: " + d.data.NumHoursOutsideSLA + "  ";						
+						
+						var myStr1 = '';
+						for( var element in d.data.WORKINGHOURAGE_DATA ){						
+							myStr = myStr + "+" + element + " hours - " + d.data.WORKINGHOURAGE_DATA[element].size + " flights  ";		
+							x3domain.push(element);	
+							bars.push({"WHA":element, "value":d.data.WORKINGHOURAGE_DATA[element].size});							
+							if ( d.data.WORKINGHOURAGE_DATA[element].size > max ) { max = d.data.WORKINGHOURAGE_DATA[element].size; };
+						}	
+						
+						roundedMax = Math.ceil(max / 100) * 100;
+						y3.domain([0,roundedMax]);										
+						x3.domain(x3domain.map(function(d,i) { return d; }));
+										
+						svg3.append('g')
+							.attr('class', 'x axis')
+							.attr('id', 'xAxis3')
+							.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + (height*1)  + ')'; })
+							.call(xAxis3);
+								
+						yAxis3 = d3.svg.axis()
+							.scale(y3)
+							.orient('left');
+					
+						svg3.append('g')
+							.attr('class', 'y axis')
+							.attr('id', 'yAxis3')
+							.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + 0  + ')'; })
+						   .call(yAxis3);
+
+						var y3_axis_grid = function() { return yAxis3; }
+					   
+						svg3.select("#yAxis3").append('g')
+							.attr('class', 'y grid')
+							.attr('id', 'y3grid')
+							.call(y3_axis_grid()
+								.tickSize(-(chart_width/2), 0, 0)
+								.tickFormat('')
+							);
+						svg3.append("text")
+							.attr("class" , "loadedText")
+							.attr("id" , "loadedText1")
+							.attr("transform" , "translate(" + (chart_width*0.75 ) + ",0)")
+							.text(myStr);			
+						svg3.select("#loadedText1").each(insertLinebreaks);
+						
+						function insertLinebreaks() {
+							
+							var str = this;
+							
+							var el1 = "";
+								
+							if ( str.id.replace("loadedText" , '') == 1 ) { el1 = myStr; }
+							else if ( str.id.replace("loadedText" , '') == 2 ) { el1 = myStr1; }
+							else { console.log("error"); }
+							
+							var el = el1.data;
+					
+							var words = el1.split('  ');
+							d3.select(this).text('');
+						
+							for (var j = 0; j < words.length; j++) {
+								var tspan = d3.select(this).append('tspan').text(words[j]);
+								if (j > 0) { tspan.attr('x', 0 ).attr('dy', '22'); }
+							}
+						};	
+						
+						svg3.append('g')
+							.attr("class","bars")
+							.selectAll('rect')
+							.data(bars)
+							.enter()
+							.append('rect')
+							.attr('class', "bars" )
+							.attr("width", x3.rangeBand())
+							.attr("x", function(d,i) { return margin.left + x3(d.WHA); })
+							.attr("y", function(d) { return y3(Math.max(0, d.value)); })
+							.attr("height", function(d,i) { return 0 + Math.abs(y3(d.value) - y3(0)); })
+							.style("stroke" , function(d,i){						
+								if ( d.WHA > 8 ) { return "#d73027"; }
+								else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+							})
+							.style("fill" , function(d,i){						
+								if ( d.WHA > 8 ) { return "#d73027"; }
+								else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+							})
+							.style("opacity" , "1.00");
+							
+						d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+						d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00);	
+							
+						d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+						d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00).style("stroke" , "black");
+						
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00");
+						d3.select("#block" + i).style("opacity" , "1.00").style("fill" , function(d,i){ return FDS.vars.legend[0][d.data.Maximum-1]; });
+						d3.select("#" + this.id).style("opacity" , "0.05");
+					}
+*/					
+					d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+					d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00);	
+						
+					d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+					d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00).style("stroke" , "black");
+					
+					d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+					d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00");
+					d3.select("#block" + i).style("opacity" , "1.00").style("fill" , function(d,i){ return FDS.vars.legend[0][d.data.Maximum-1]; });
+					d3.select("#" + this.id).style("opacity" , "0.05");
+						
+					return;
+				})
+				.on("mouseout", function(d,i){
+				
+					if ( barSelected == -1 ) {				
+						d3.selectAll(".legendBlocks").style("opacity" , "1.0");
+						d3.select("#legendBlock" + d.data.Maximum).style("stroke" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "0.50").style("fill" , "#abcdef");						
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "0.50").style("fill" , "#abcdef");						
+						d3.select("#block" + i).style("opacity" , "0.50").style("fill" , " #abcdef");						
+						d3.select("#" + this.id).style("opacity" , "0.0");					
+//						d3.select("#legendClassHighlight").style("display" , "none");
+					}
+						
+					return;
+				})
+				.on("click", function(d,i){
+				
+					/* var */ barData = d;
+
+					if ( barSelected == -1 ) {
+
+						barSelected = i;
+						
+						d3.selectAll(".maximumAgeBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");
+						d3.selectAll(".NumberFlightsBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");										
+					
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00")/*.style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum])*/;
+						
+						d3.select("#buttons").style("display" , "inline");
+						
+//						var row3_class = d3.select("#row3").attr("class");
+//						row3_class = row3_class.replace("show", "hidden");
+//						d3.select("#row3").attr("class", row3_class);						
+					
+//						var row4_class = d3.select("#row4").attr("class");
+//						row4_class = row4_class.replace("show", "hidden");
+//						d3.select("#row4").attr("class", row4_class);	
+						
+//						var row5_class = d3.select("#row5").attr("class");
+//						row5_class = row5_class.replace("hidden", "show");
+//						d3.select("#row5").attr("class", row5_class);										
+						
+						draw_HierarchicalBars(barData);
+						
+					}// end if ... 
+				
+					return;
+				});	
+			
+			
+			// .attr("d","M 0 60 L 50 110 L 90 70 L 140 100")
+			var path = 'M';
+			var path1 = 'M';
+			var path2 = 'M';
+			
+			for ( var element in data ) {
+				
+				var timeOffset = d3.time.hour.offset(data[element].data.fullGMTDate, 1.00);
+				
+				var halfBarOffset = (FDS.focusColumnWidth/2);
+				
+				if ( use_Offset == true ) {
+					path = path   +  (x(data[element].data.fullGMTDate)-halfBarOffset) + " " + y(data[element].data.Maximum) + " L" + (x(timeOffset)-halfBarOffset) + " " + y(data[element].data.Maximum) + " L";
+					path1 = path1 + (x1(data[element].data.fullGMTDate)-halfBarOffset) + " " + y1(data[element].data["Number of Flights"]) + " L" + (x1(timeOffset)-halfBarOffset)+ " " + y1(data[element].data["Number of Flights"]) + " L";
+					path2 = path2 + (x2(data[element].data.fullGMTDate)-halfBarOffset) + " " + y2(data[element].data.Maximum) + " L" + (x2(timeOffset)-halfBarOffset) + " " + y2(data[element].data.Maximum) + " L";
+				}	
+				else {
+					path = path   +  (x(data[element].data.fullGMTDate)) + " " + y(data[element].data.Maximum) + " L" + (x(timeOffset)) + " " + y(data[element].data.Maximum) + " L";
+					path1 = path1 + (x1(data[element].data.fullGMTDate)) + " " + y1(data[element].data["Number of Flights"]) + " L" + (x1(timeOffset))+ " " + y1(data[element].data["Number of Flights"]) + " L";
+					path2 = path2 + (x2(data[element].data.fullGMTDate)) + " " + y2(data[element].data.Maximum) + " L" + (x2(timeOffset)) + " " + y2(data[element].data.Maximum) + " L";								
+				}
+			}
+			
+			path = path.substring(0 , path.length-1) + " ";
+			path1 = path1.substring(0 , path1.length-1) + " ";
+			path2 = path2.substring(0 , path2.length-1) + " ";
+					
+						
+			focus.append("path")
+				.attr("class" , "paths")
+				.attr("id" , "path")
+				.attr("d" , path)
+				.style("stroke-width" , "2px")
+				.style("stroke" , "#0d78a7")
+				.style("fill" , "none")
+				.style("pointer-events" , "none");	
+					
+			
+
+			// MIDDLE GRAPH ...
+			focus1.append("g")
+				.attr("class", "x1 axis")
+				.attr("id", "xAxis1")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis1);
+
+			focus1.append("g")
+				.attr("class", "y axis")
+				.attr("id", "yAxis1")
+				.call(yAxis1)
+				.append("text")
+					.attr("transform" , "translate(-20,-20)")
+					.style("font-size" , "10pt")
+					.style("font-weight" , "bold")
+					.text("Total number of flights (by working hours from current time)")
+					.style("pointer-events" , "none");
+
+			FDS.yticks1 = focus1.selectAll('#yAxis1').selectAll('.tick');					 
+			FDS.yticks1.append('svg:line')
+				.attr('y0',0)
+				.attr('y1',0)
+				.attr('x1',0)
+				.attr('x2',chart_width);
+												
+								
+			// Draw bars for variable on middle graph;			
+			focus1.selectAll(".NumberFlightsBlocks")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("clip-path", "url(#clip)")
+				.attr("class", "NumberFlightsBlocks")
+				.attr("id", function(d,i){ return "NumberFlightsBlock" + i; })
+				.attr("x", function(d,i){
+					if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+					else { return x1(d.date); }
+				})
+				.attr("width", function(d,i){ return (FDS.focusColumnWidth); })
+				.attr("y", function(d,i){ return y1(d.data["Number of Flights"]); })				
+				.attr("height", function(d,i){ return Math.abs(y1(d.data["Number of Flights"]) - y1(0)); });
+		
+		
+			// Draw TRANSPARENT bars for variable on MIDDLE graph;
+			focus1.selectAll(".transparentNumberFlightsBlocks")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("clip-path", "url(#clip)")
+				.attr("class", "transparentNumberFlightsBlocks")
+				.attr("id", function(d,i){ return "transparentNumberFlightsBlock" + i; })
+				.attr("x", function(d,i){
+					if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+					else { return x1(d.date); }
+				})
+				.attr("y", function(d,i){ return y1(y1.domain()[1]); })
+				.attr("width", function(d,i){ return FDS.focusColumnWidth; })
+				.attr("height", function(d,i) { return y1(0); })
+				.style("opacity", "0.0")
+				.on("mouseover", function(d,i){
+				
+					barData = d;
+					eye = i;
+
+					drawBarChart(barData , eye);
+/*	
+				
+					var max = -1;
+					var roundedMax = -1;
+					
+					if ( barSelected == -1 ) {
+					
+						d3.selectAll(".loadedText").text("");
+					
+						d3.select("#xAxis3").remove();
+						d3.select("#yAxis3").remove();	
+						d3.selectAll(".bars").remove();	
+						d3.selectAll(".loadedText").remove();
+
+						var row2_class = d3.select("#row2").attr("class");
+						row2_class = row2_class.replace("show", "hidden");
+						d3.select("#row2").attr("class", row2_class);	
+
+						var row3_class = d3.select("#row3").attr("class");
+						row3_class = row3_class.replace("hidden", "show");
+						d3.select("#row3").attr("class", row3_class);
+								
+						var x3domain = [];
+						bars = [];
+						var myStr = '';
+						
+						myStr = myStr + "Number of log entries: " + d.data["Number of Entries"] + "  ";
+						myStr = myStr + "Max. #hours past current: " + d.data.Maximum + "  ";
+						myStr = myStr + "Mean #hours past current: " + d.data.Mean.toFixed(1) + "  ";	
+						myStr = myStr + "Num flights outside SLA: " + d.data.NumFlightsOutsideSLA + "  ";	
+						myStr = myStr + "Num hours outside SLA: " + d.data.NumHoursOutsideSLA + "  ";						
+						
+						var myStr1 = '';
+						for( var element in d.data.WORKINGHOURAGE_DATA ){						
+							myStr = myStr + "+" + element + " hours - " + d.data.WORKINGHOURAGE_DATA[element].size + " flights  ";		
+							x3domain.push(element);	
+							bars.push({"WHA":element, "value":d.data.WORKINGHOURAGE_DATA[element].size});							
+							if ( d.data.WORKINGHOURAGE_DATA[element].size > max ) { max = d.data.WORKINGHOURAGE_DATA[element].size; };
+						}	
+						
+						roundedMax = Math.ceil(max / 100) * 100;
+						y3.domain([0,roundedMax]);										
+						x3.domain(x3domain.map(function(d,i) { return d; }));
+										
+						svg3.append('g')
+							.attr('class', 'x axis')
+							.attr('id', 'xAxis3')
+							.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + (height*1)  + ')'; })
+							.call(xAxis3);
+								
+						yAxis3 = d3.svg.axis()
+							.scale(y3)
+							.orient('left');
+					
+						svg3.append('g')
+							.attr('class', 'y axis')
+							.attr('id', 'yAxis3')
+							.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + 0  + ')'; })
+						   .call(yAxis3);
+
+						var y3_axis_grid = function() { return yAxis3; }
+					   
+						svg3.select("#yAxis3").append('g')
+							.attr('class', 'y grid')
+							.attr('id', 'y3grid')
+							.call(y3_axis_grid()
+								.tickSize(-(chart_width/2), 0, 0)
+								.tickFormat('')
+							);
+						svg3.append("text")
+							.attr("class" , "loadedText")
+							.attr("id" , "loadedText1")
+							.attr("transform" , "translate(" + (chart_width*0.75 ) + ",0)")
+							.text(myStr);			
+						svg3.select("#loadedText1").each(insertLinebreaks);
+						
+						function insertLinebreaks() {
+							
+							var str = this;
+							
+							var el1 = "";
+								
+							if ( str.id.replace("loadedText" , '') == 1 ) { el1 = myStr; }
+							else if ( str.id.replace("loadedText" , '') == 2 ) { el1 = myStr1; }
+							else { console.log("error"); }
+							
+							var el = el1.data;
+					
+							var words = el1.split('  ');
+							d3.select(this).text('');
+						
+							for (var j = 0; j < words.length; j++) {
+								var tspan = d3.select(this).append('tspan').text(words[j]);
+								if (j > 0) { tspan.attr('x', 0 ).attr('dy', '22'); }
+							}
+						};	
+						
+						svg3.append('g')
+							.attr("class","bars")
+							.selectAll('rect')
+							.data(bars)
+							.enter()
+							.append('rect')
+							.attr('class', "bars" )
+							.attr("width", x3.rangeBand())
+							.attr("x", function(d,i) { return margin.left + x3(d.WHA); })
+							.attr("y", function(d) { return y3(Math.max(0, d.value)); })
+							.attr("height", function(d,i) { return 0 + Math.abs(y3(d.value) - y3(0)); })
+							.style("stroke" , function(d,i){						
+								if ( d.WHA > 8 ) { return "#d73027"; }
+								else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+							})
+							.style("fill" , function(d,i){						
+								if ( d.WHA > 8 ) { return "#d73027"; }
+								else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+							})
+							.style("opacity" , "1.00");
+							
+						d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+						d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00);	
+							
+						d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+						d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00).style("stroke" , "black");
+						
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00");
+						d3.select("#block" + i).style("opacity" , "1.00").style("fill" , function(d,i){ return FDS.vars.legend[0][d.data.Maximum-1]; });
+						d3.select("#" + this.id).style("opacity" , "0.05");
+					}
+*/		
+
+					d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+					d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00);	
+						
+					d3.selectAll(".legendBlocks").style("opacity" , 0.25);
+					d3.select("#legendBlock" + d.data.Maximum).style("opacity" , 1.00).style("stroke" , "black");
+					
+					d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+					d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00");
+					d3.select("#block" + i).style("opacity" , "1.00").style("fill" , function(d,i){ return FDS.vars.legend[0][d.data.Maximum-1]; });
+					d3.select("#" + this.id).style("opacity" , "0.05");
+						
+					return;
+				})
+				.on("mouseout", function(d,i){
+				
+					if ( barSelected == -1 ) {
+						d3.selectAll(".legendBlocks").style("opacity" , "1.0");
+						d3.select("#legendBlock" + d.data.Maximum).style("stroke" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "0.50").style("fill" , "#abcdef");						
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "0.50").style("fill" , "#abcdef");						
+						d3.select("#block" + i).style("opacity" , "0.50").style("fill" , " #abcdef");						
+						d3.select("#" + this.id).style("opacity" , "0.0");					
+//						d3.select("#legendClassHighlight").style("display" , "none");
+						}
+						
+					return;
+				})
+				.on("click", function(d,i){
+				
+					/* var */ barData = d;
+
+					if ( barSelected == -1 ) {
+
+						barSelected = i;
+						
+						d3.selectAll(".maximumAgeBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");
+						d3.selectAll(".NumberFlightsBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");										
+					
+						d3.select("#maximumAgeBlock" + i).style("opacity" , "1.00").style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum]);
+						d3.select("#NumberFlightsBlock" + i).style("opacity" , "1.00")/*.style("fill" , FDS.vars.legend[0][FDS.vars.legend[0].length - d.data.Maximum])*/;
+						
+						d3.select("#buttons").style("display" , "inline");
+						
+//						var row3_class = d3.select("#row3").attr("class");
+//						row3_class = row3_class.replace("show", "hidden");
+//						d3.select("#row3").attr("class", row3_class);						
+					
+//						var row4_class = d3.select("#row4").attr("class");
+//						row4_class = row4_class.replace("show", "hidden");
+//						d3.select("#row4").attr("class", row4_class);	
+						
+//						var row5_class = d3.select("#row5").attr("class");
+//						row5_class = row5_class.replace("hidden", "show");
+//						d3.select("#row5").attr("class", row5_class);										
+						
+						draw_HierarchicalBars(barData);
+						
+					}// end if ... 
+				
+					return;
+				});
+						
+			focus1.append("path")
+				.attr("class" , "paths")
+				.attr("id" , "path1")
+				.attr("d" , path1)
+				.style("stroke-width" , "2px")
+				.style("stroke" , "#0d78a7")
+				.style("fill" , "none")
+				.style("pointer-events" , "none");			  
+			  
+			  
+			if ( barSelected == -1 ) { 
+				  
+				// LOWER GRAPH ...	
+				context.append("rect")
+					.attr("class", "grid-background")
+					.attr("width", graphic2.width() - margin.left - margin.right)
+					.attr("height", height/2)
+					.style("opacity" , 0.5);
+
+				context.append("g")
+					.attr("class", "x grid")
+					.attr("transform", "translate(0," + height/2 + ")")
+					.call(d3.svg.axis()
+					.scale(x2)
+					.orient("bottom")
+					.ticks(d3.time.hour, 24)
+					.tickSize(-height/2)
+					.tickFormat(""))
+					.selectAll(".tick")
+					.classed("minor", function(d) { return d.getHours(); });
+					
+				context.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height/2 + ")")
+					.call(d3.svg.axis()
+					.scale(x2)
+					.orient("bottom")
+					.ticks(d3.time.hour)
+					.tickPadding(0))
+					.selectAll("text")
+					.attr("x", 6)
+					.style("text-anchor", null)
+					.style("display","none");
+												
+				// Draw bars for variable on lower graph;			
+				context.selectAll(".blocks")
+					.data(data)
+					.enter()
+					.append("rect")
+					.attr("clip-path", "url(#clip2)")
+					.attr("class", "blocks")
+					.attr("id", function(d,i){ return "block" + i; })
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x2(d.date) - ((x2.range()[1]/data.length)/2); }
+						else { return x2(d.date); }
+					})
+					.attr("y", function(d,i){ return y2(d.data.Maximum); })
+					.attr("width", function(d,i){ return (x2.range()[1]/data.length); })
+					.attr("height", function(d,i){ return Math.abs(y2(d.data.Maximum) - y2(0)); });
+
+				context.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height/2 + ")")
+				  .call(xAxis2);
+
+				context.append("g")
+				  .attr("class", "x brush")
+				  .attr("id", "xbrush")
+				  .call(brush)
+				.selectAll("rect")
+				  .attr("y", -6)
+				  .attr("height", height/2 + 7);
+				  
+				  
+						
+
+				var gBrush = context.append("g")
+					.attr("class", "brush")
+					.call(brush)
+					.call(brush.event);
+
+				gBrush.selectAll("rect")
+					.attr("height", height/2);	
+							
+				context.append("path")
+					.attr("class" , "paths2")
+					.attr("id" , "path2")
+					.attr("d" , path2);
+					
+			} // end if ....
+					
+				
+				
+		function brushed() {
+						
+			midnightCount = 0;
+		
+			x.domain(brush.empty() ? x2.domain() : brush.extent());
+			focus.select(".area").attr("d", area);
+			focus.select(".x.axis").call(xAxis);
+				
+			x1.domain(brush.empty() ? x2.domain() : brush.extent());
+			focus1.select(".area1").attr("d", area1);
+			focus1.select(".x1.axis").call(xAxis1);
+			
+			get_brushExtent();
+		
+			if ( brush.empty() == true ) { FDS.focusColumnWidth = chart_width / data.length; }
+			else { FDS.focusColumnWidth = chart_width / HourArray.length; }
+			
+			d3.select("#path").remove();
+			d3.select("#path1").remove();
+			
+			// Example path string ... 
+			// .attr("d","M 0 60 L 50 110 L 90 70 L 140 100")
+			var path = 'M';
+			var path1 = 'M';
+			var path2 = 'M';
+			
+			for ( var element in data ) {
+							
+				var timeOffset = d3.time.hour.offset(data[element].data.fullGMTDate, 1);
+				
+				var halfBarOffset = FDS.focusColumnWidth/2;
+				
+				if ( use_Offset == true ) {
+					path = path   +  (x(data[element].data.fullGMTDate)-halfBarOffset) + " " + y(data[element].data.Maximum) + " L" + (x(timeOffset)-halfBarOffset) + " " + y(data[element].data.Maximum) + " L";
+					path1 = path1 + (x1(data[element].data.fullGMTDate)-halfBarOffset) + " " + y1(data[element].data["Number of Flights"]) + " L" + (x1(timeOffset)-halfBarOffset)+ " " + y1(data[element].data["Number of Flights"]) + " L";
+					path2 = path2 + (x2(data[element].data.fullGMTDate)-halfBarOffset) + " " + y2(data[element].data.Maximum) + " L" + (x2(timeOffset)-halfBarOffset) + " " + y2(data[element].data.Maximum) + " L";
+				}	
+				else {
+					path = path   +  (x(data[element].data.fullGMTDate)) + " " + y(data[element].data.Maximum) + " L" + (x(timeOffset)) + " " + y(data[element].data.Maximum) + " L";
+					path1 = path1 + (x1(data[element].data.fullGMTDate)) + " " + y1(data[element].data["Number of Flights"]) + " L" + (x1(timeOffset))+ " " + y1(data[element].data["Number of Flights"]) + " L";
+					path2 = path2 + (x2(data[element].data.fullGMTDate)) + " " + y2(data[element].data.Maximum) + " L" + (x2(timeOffset)) + " " + y2(data[element].data.Maximum) + " L";								
+				}
+				
+			} // end for ... 
+			
+			path = path.substring(0 , path.length-1) + " ";
+			path1 = path1.substring(0 , path1.length-1) + " ";
+			
+			if ( FDS.focusColumnWidth != Infinity ) {
+										
+				focus.append("path")
+					.attr("class" , "paths")
+					.attr("id" , "path")
+					.attr("d" , path)
+					.style("stroke-width" , "2px")
+					.style("stroke" , "#0d78a7")
+					.style("fill" , "none");
+					
+				focus1.append("path")
+					.attr("class" , "paths")
+					.attr("id" , "path1")
+					.attr("d" , path1)
+					.style("stroke-width" , "2px")
+					.style("stroke" , "#0d78a7")
+					.style("fill" , "none")
+					.style("pointer-events" , "none");	
+			
+				focus.selectAll(".maximumAgeBlocks")
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+						else { return x1(d.date); }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+				focus.selectAll(".transparentMaximumAgeBlocks")
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+						else { return x1(d.date); }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+				focus1.selectAll(".NumberFlightsBlocks")
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+						else { return x1(d.date); }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+				focus1.selectAll(".transparentNumberFlightsBlocks")
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+						else { return x1(d.date); }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+				focus1.select("#componentBar")
+					.attr("transform" , function(d) {
+						if ( use_Offset == true ) { return "translate(" + x(d.date)-(FDS.focusColumnWidth/2) + "," + y1(y1.domain()[1]) + ")"; }
+						else { return "translate(" + x(d.date) + "," + y1(y1.domain()[1]) + ")"; }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+				focus1.selectAll(".highlightBars")
+					.attr("x", function(d,i){
+						if ( use_Offset == true ) { return x1(d.date) - (FDS.focusColumnWidth/2); }
+						else { return x1(d.date); }
+					})
+					.attr("width", FDS.focusColumnWidth);
+					
+			} // end if ... 
+			
+		} // end function brushed()
+		
+		
+			
+			
+			
+			function brushended() {
+			
+				if (!d3.event.sourceEvent) return; // only transition after input
+				
+				var extent0 = brush.extent(),
+					extent1 = extent0.map(d3.time.hour.round);
+
+				// if empty when rounded, use floor & ceil instead
+				if (extent1[0] >= extent1[1]) {
+					extent1[0] = d3.time.hour.floor(extent0[0]);
+					extent1[1] = d3.time.hour.ceil(extent0[1]);
+				}
+
+				d3.select(this).transition()
+					.call(brush.extent(extent1))
+					.call(brush.event);					
+			}			
+
+			function type(d) {
+			  d.date = parseDate(d.date);
+			  d.price = +d.price;
+			  return d;
+			}
+			
+			
+			if ( barSelected != -1 ) { draw_HierarchicalBars(barData); }
+		
+						
+			//use pym to calculate chart dimensions	
+		    if (pymChild) {
+		        pymChild.sendHeight();
+		    }
+		}
+
+		//check whether browser can cope with svg	
+		if (Modernizr.svg) {
+		
+		   //load config 
+			d3.json("config.json", function(error, config) {
+		
+				FDS = config;
+				cue();
+			})
+
+		} else {
+			 //use pym to create iframe containing fallback image (which is set as default)
+			 pymChild = new pym.Child();
+			if (pymChild) {
+		        pymChild.sendHeight();
+		    }
+		}
+		
+		
+		function cue(){
+		
+			queue() 
+				.defer(d3.csv, "../data/data.csv") 
+				.await(ready);
+
+			return;
+			
+		}// end function cue()
+		
+		
+		
+		function ready(error, data_list ) {
+		
+			getData( data_list );			
+			pymChild = new pym.Child({renderCallback: drawGraphic});
+
+			return;
+			
+		}// end function ready()
+
+		
+		
+		// function called to get all new data arrays when user reloads based on new event type (fuel, safety, etc)
+		function getData( data_list ) {
+						
+/*						
+			var flightCountByHours = [];
+			var flightCountByFleets = [];
+					
+			var nonWorkHours = [ "17:00", "09:00" ];
+			var hiatus = false;	
+			var dateFormat = "%H:%M";
+*/			
+			var dateObj = []; 
+			var d = new Date();
+			var SLALimit = d3.time.hour.offset(d, -8);
+			dateObj = [d , SLALimit].map(formatTime);
+			
+			
+			data_list.forEach(function(d,i){
+			
+				//	... input date format ... "29/12/2015 23:45"				
+				d.date = d3.time.format(FDS.vars.dateFormat).parse(d["Date Time"]);
+				d.TotalWorkingHoursAge = d["Working Hours Age"] * d["Number of Flights"];
+			})
+			
+			data_obj = d3.nest()
+				.key(function(d) {
+					return d["Organisation"];
+				})
+				.key(function(d) { return d["Date Time"].substring(0,13); })
+				.rollup(function(v) { return d3.sum(v, function(d) { return d["Number of Flights"]; }); })
+				.rollup(function(leaves,i) {
+					return {	
+						"Number of Entries" : leaves.length,
+						"Number of Flights" : d3.sum(leaves, function(d,i) { return d["Number of Flights"]; }),
+						"Sum_TotalWorkingHoursAge" : d3.sum(leaves, function(d,i) { return d["TotalWorkingHoursAge"]; }),
+						"Mean" : d3.sum(leaves, function(d,i) { return d["TotalWorkingHoursAge"]; }) / d3.sum(leaves, function(d,i) { return d["Number of Flights"]; }),
+						"Maximum" : d3.max(leaves, function(d,i) { return d3.max(d["Working Hours Age"]); }),
+						"NumFlightsOutsideSLA" : d3.sum(leaves, function(d,i) {
+							if ( d["Working Hours Age"] >= 9 ) { return d["Number of Flights"]; }
+						}),
+						"NumHoursOutsideSLA" : d3.sum(leaves, function(d,i) {
+							if ( d["Working Hours Age"] >= 9 ) { return (d["Working Hours Age"]-SLA)*d["Number of Flights"]; }
+						})
+					}
+				})
+				.map(data_list);
+			
+			
+
+			flightCountByHours = d3.nest()
+				.key(function(d) { return d["Organisation"]; })
+				.key(function(d) { return d["Date Time"].substring(0,13); })
+				.key(function(d) { return "WORKINGHOURAGE_DATA"; })
+				.key(function(d) { return d["Working Hours Age"]; })
+				.rollup(function(leaves) { return { "size" : d3.sum(leaves, function(d,i) { return d["Number of Flights"]; }) }
+				})
+				.map(data_list);	
+			
+
+			
+			flightCountByFleets = d3.nest()
+				.key(function(d) { return d["Organisation"]; })
+				.key(function(d) { return d["Date Time"].substring(0,13); })
+				.key(function(d) { return "FLEET_DATA"; })
+				.key(function(d) { return d["Working Hours Age"]; })
+				.key(function(d) { return d["Fleet"]; })
+				.rollup(function(leaves) { return { "size" : d3.sum(leaves, function(d,i) { return d["Number of Flights"]; }) } 
+				})
+				.map(data_list);
+						
+							
+			for ( var element in data_obj) {				
+				var component = data_obj[element];
+				offices.push(d["Organisation"]);
+				
+				for ( var item in component){
+					data_obj[element][item].WORKINGHOURAGE_DATA = flightCountByHours[element][item].WORKINGHOURAGE_DATA;	
+					data_obj[element][item].FLEET_DATA = flightCountByFleets[element][item].FLEET_DATA;
+				}
+			}						
+			
+			return;
+		
+		}// end function getData() 
+		
+		
+		
+		
+		
+		function rollRow(fid){
+			
+			var directionUp = d3.select("#" + fid.id).attr("value").indexOf("Hide");
+			
+			if ( directionUp != -1 ) {
+				$("#"+fid.id.replace("Btn",'')).slideUp();
+				d3.select("#" + fid.id).attr("value", "Show " + fid.id.replace("Btn",''));				
+				d3.select("#" + fid.id).attr("src" , "../images/Expand.png").attr("transform" , "rotate(180,0,0)");
+				
+				
+			}
+			else {
+				$("#"+fid.id.replace("Btn",'')).slideDown();
+				d3.select("#" + fid.id).attr("value", "Hide " + fid.id.replace("Btn",''));				
+				d3.select("#" + fid.id).attr("src" , "../images/Collapse.png");
+			}	
+			
+			return;
+             
+		} // end function rollRow(fid)
+		
+		
+		
+		
+		
+		function get_brushExtent(){
+				
+			set_brushExtent = brush.extent();
+			set_brushRangeExtent = [x2(set_brushExtent[0]).toFixed(0), x2(set_brushExtent[1]).toFixed(0) ];
+			set_brushRangeWidth  = set_brushRangeExtent[1] - set_brushRangeExtent[0];							
+			HourArray = d3.time.hours(set_brushExtent[0], set_brushExtent[1]);
+			
+			if ( HourArray.length != 0 ) {
+				var extent1 = brush.extent().map(d3.time.hour.round);			
+				d3.select("#timeRangeString")
+					.text(((extent1[0].toString()).substring(0,(extent1[0]).toString().indexOf("GMT")-1)) + " to " + ((extent1[1].toString()).substring(0,(extent1[1]).toString().indexOf("GMT")-1))).style("text-anchor", "start")
+					.style("display", function(d,i){
+						if (graphic.width() < threshold_sm) { return "none"; }
+						else if (graphic.width() < threshold_md) { return "none"; }
+						else { return 'inline'; }
+					});
+			}
+				
+			return;
+
+		}// end function get_brushExtent()
+		
+		
+		
+		
+		
+		function selectOffice(fid){
+		
+			d3.select("#svg3").remove();
+	
+			//ROW 2 ... 
+			var row2_class = d3.select("#row2").attr("class");
+			row2_class = row2_class.replace("hidden", "show");
+			d3.select("#row2").attr("class", row2_class);
+			
+			//ROW 3 ... 
+			var row3_class = d3.select("#row3").attr("class");
+			row3_class = row3_class.replace("show", "hidden");
+			d3.select("#row3").attr("class", row3_class);			
+			
+			if ( fid.id == "FDSL" && d3.select("#" + fid.id).attr("class").indexOf("active") == -1 ) {
+			
+			// btn btn-primary-outline 
+			
+				d3.select("#FDSL").attr("class" , "btn-primary-outline default");
+				d3.select("#FDSI").attr("class" , "btn-primary-outline default");
+				
+				selectedOffice = "Flight Data Services Ltd";			
+				pymChild = new pym.Child({renderCallback: drawGraphic});
+			
+			} // end if ... 
+			
+			else if ( fid.id == "FDSI" && d3.select("#" + fid.id).attr("class").indexOf("active") == -1 ) {
+			
+				d3.select("#FDSI").attr("class" , "btn-primary-outline default");
+				d3.select("#FDSL").attr("class" , "btn-primary-outline default");
+				
+				selectedOffice = "Flight Data Services Inc";			
+				pymChild = new pym.Child({renderCallback: drawGraphic});
+			
+			} // end if ... 
+			
+			else {
+			}
+		
+			
+			return;
+		
+		}// end function selectOffice()
+		
+		
+		
+		function revert(fid){
+
+			barSelected = -1;
+		    graphic4.empty();
+
+			d3.select("#buttons").style("display" , "none");
+			d3.select("#hierarchyTitle").text("");
+			
+		//	d3.selectAll(".legendBlocks").style("opacity" , "1.0").style("stroke-width", "4px" );
+			d3.selectAll(".maximumAgeBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");
+			d3.selectAll(".NumberFlightsBlocks").style("opacity" , "0.50").style("fill" , "#abcdef");						
+			d3.selectAll(".blocks").style("opacity" , "0.50").style("fill" , " #abcdef");
+			d3.selectAll(".transparentMaximumAgeBlocks").style("opacity" , "0.0");	
+			d3.selectAll(".transparentNumberFlightsBlocks").style("opacity" , "0.0");
+			
+//			d3.select("#row3").attr("class", "row show");
+//			d3.select("#row4").attr("class", "row hidden");
+//			d3.select("#row5").attr("class", "row hidden");	
+
+			d3.select("#row2").attr("class", "row show");
+			d3.select("#row3").attr("class", "row hidden");	
+			
+			return;
+		
+		}// end function revert(fid)
+		
+
+		
+		
+
+		function clickBtn(fid){
+			
+			if ( fid.id == 'clear' ) {
+			
+				d3.selectAll(".yAxisLabels").style("font-size","10px").style("font-weight","normal").style("fill", "#222222");
+				d3.selectAll(".dataBars")
+					.style("fill" , function(d,i){
+						if (typeof d.children !== 'undefined') { return "#4682B4"; }
+						else{ return "#ccc"; }
+					})
+					.style("opacity","0.75");
+			}			
+			else if ( fid.id == 'help' ) {
+				
+				var help_state = d3.select("#help").attr("class")
+				
+				if ( help_state.indexOf("active") != -1 ) {
+					d3.select("#help").attr("class" , "btn btn-primary-outline default")
+					$("#infoBox").hide(400);
+				}
+				else {
+					d3.select("#help").attr("class" , "btn btn-primary-outline active")
+					$("#infoBox").show(400);
+				}
+			}
+			else {			
+				FDS.sortOption = fid.id;
+				
+				d3.selectAll(".btn").attr("class" , "btn btn-primary-outline default")
+				d3.select("#" + fid.id).attr("class" , "btn btn-primary-outline active")
+				
+				sortData();
+			}
+			
+			return;
+		
+		}// end function function clickBtn()	
+		
+		
+		
+		
+		
+		function sortData(){
+		
+			var group_data = svg4.selectAll(".groups")/* .data() */;
+						
+			group_data.sort(FDS.sortOption == 'value'
+					? function(a, b) { return b.value - a.value; }
+					: function(a, b) { return d3.ascending(a.name, b.name); });
+								
+			d3.selectAll(".groups")
+				.transition()
+				.delay(function(d, i) { return i * 50; })
+				.duration(1000)
+				.attr("transform", function(d, i) { return "translate(0," + barHeight * i * 1.2 + ")"; });
+
+			return;
+			
+		}// end function sortData()
+		
+		
+		
+		
+		
+		function LW(fid){
+			
+			var newDate = '';
+			
+			//d3.select(".brush").remove();
+			//d3.select(".extent").style("display", "none");
+			
+			// current working day ... 
+			if ( fid.id  == "CD" ) { newDate = d3.time.day.floor(timeDomain[1]); }
+			
+			// last day ... 
+			else if ( fid.id  == "LD" ) { newDate = d3.time.day.offset(timeDomain[1], -1); }
+			
+			// current working week ... 
+			else if ( fid.id  == "CW" ) { newDate = d3.time.week.floor(timeDomain[1]); }
+			
+			// last 7 days (including w/e)
+			else if ( fid.id  == "L7D" ) { newDate = d3.time.week.offset(timeDomain[1], -1); }
+			
+			// current working month ...
+			else if ( fid.id  == "CM" ) { newDate = d3.time.month.floor(timeDomain[1]); }
+			
+			// Last month ... 
+			else if ( fid.id  == "LM" ) { newDate = d3.time.month.offset(timeDomain[1], -1); }		
+
+						
+			brush.extent([ new Date(newDate) , new Date(timeDomain[1]) ]);
+
+			
+			// now draw the brush to match our extent
+			// use transition to slow it down so we can see what is happening
+			// remove transition so just d3.select(".brush") to just draw
+			brush(d3.select(".brush").transition());
+
+			
+			// now fire the brushstart, brushmove, and brushend events
+			// remove transition so just d3.select(".brush") to just draw
+			brush.event(d3.select(".brush").transition().delay(1000))	
+		
+		
+			return;
+			
+		
+		}// end function LW(this)
+		
+		
+		
+		
+		function help(fid){
+			
+			var help_state = d3.select("#help").attr("class");
+			
+			if ( help_state.indexOf("active") != -1 ) {
+				d3.select("#help").attr("class" , "btn btn-info")
+				$("#infoBox").hide(400);
+			}
+			else {
+				d3.select("#help").attr("class" , "btn btn-info")
+				$("#infoBox").show(400);
+			}	
+			
+			return;
+		
+		}// end function help(fid)
+		
+
+		
+		function infoHide(){
+		
+			d3.select("#help").attr("class" , "btn btn-info")
+			$("#infoBox").hide(400);	
+			
+			return;
+		
+		}// end function infoHide(fid)
+		
+		
+		
+		function drawBarChart(d,i){
+		
+			console.log("drawBarChart")
+			d3.select("#svg3").remove();
+						
+		
+			var max = -1;
+			var roundedMax = -1;
+			
+			//if ( barSelected == -1 ) {
+			
+				/*var */ svg3 = d3.select('#graphic3')
+							.append('svg')
+							.attr("class", "mySVGs")
+							.attr("id", "svg3")
+							.attr("width", chart_width + margin.left + margin.right)
+							.attr("height", (height) + margin.top + margin.bottom)
+							.append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");			
+			
+				d3.selectAll(".loadedText").text("");
+			
+				d3.select("#xAxis3").remove();
+				d3.select("#yAxis3").remove();	
+				d3.selectAll(".bars").remove();	
+				d3.selectAll(".loadedText").remove();
+
+				var row2_class = d3.select("#row2").attr("class");
+				row2_class = row2_class.replace("show", "hidden");
+				d3.select("#row2").attr("class", row2_class);	
+
+				var row3_class = d3.select("#row3").attr("class");
+				row3_class = row3_class.replace("hidden", "show");
+				d3.select("#row3").attr("class", row3_class);
+						
+				var x3domain = [];
+				bars = [];
+				var myStr = '';
+				
+				myStr = myStr + "Number of log entries: " + d.data["Number of Entries"] + "  ";
+				myStr = myStr + "Max. #hours past current: " + d.data.Maximum + "  ";
+				myStr = myStr + "Mean #hours past current: " + d.data.Mean.toFixed(1) + "  ";	
+				myStr = myStr + "Num flights outside SLA: " + d.data.NumFlightsOutsideSLA + "  ";	
+				myStr = myStr + "Num hours outside SLA: " + d.data.NumHoursOutsideSLA + "  ";						
+				
+				var myStr1 = '';
+				for( var element in d.data.WORKINGHOURAGE_DATA ){						
+					myStr = myStr + "+" + element + " hours - " + d.data.WORKINGHOURAGE_DATA[element].size + " flights  ";		
+					x3domain.push(element);	
+					bars.push({"WHA":element, "value":d.data.WORKINGHOURAGE_DATA[element].size});							
+					if ( d.data.WORKINGHOURAGE_DATA[element].size > max ) { max = d.data.WORKINGHOURAGE_DATA[element].size; };
+				}	
+				
+				roundedMax = Math.ceil(max / 100) * 100;
+				y3.domain([0,roundedMax]);										
+				x3.domain(x3domain.map(function(d,i) { return d; }));
+								
+				svg3.append('g')
+					.attr('class', 'x axis')
+					.attr('id', 'xAxis3')
+					.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + (graphic3.height()-margin.top-margin.bottom)  + ')'; })
+					.call(xAxis3);
+						
+				yAxis3 = d3.svg.axis()
+					.scale(y3)
+					.orient('left');
+			
+				svg3.append('g')
+					.attr('class', 'y axis')
+					.attr('id', 'yAxis3')
+					.attr('transform', function(d,i) { return 'translate(' + margin.left + ',' + 0  + ')'; })
+				   .call(yAxis3);
+
+				var y3_axis_grid = function() { return yAxis3; }
+			   
+				svg3.select("#yAxis3").append('g')
+					.attr('class', 'y grid')
+					.attr('id', 'y3grid')
+					.call(y3_axis_grid()
+						.tickSize(-(chart_width/2), 0, 0)
+						.tickFormat('')
+					);
+				svg3.append("text")
+					.attr("class" , "loadedText")
+					.attr("id" , "loadedText1")
+					.attr("transform" , "translate(" + (chart_width*0.75 ) + ",0)")
+					.text(myStr);			
+				svg3.select("#loadedText1").each(insertLinebreaks);
+				
+				function insertLinebreaks() {
+					
+					var str = this;
+					
+					var el1 = "";
+						
+					if ( str.id.replace("loadedText" , '') == 1 ) { el1 = myStr; }
+					else if ( str.id.replace("loadedText" , '') == 2 ) { el1 = myStr1; }
+					else { console.log("error"); }
+					
+					var el = el1.data;
+			
+					var words = el1.split('  ');
+					d3.select(this).text('');
+				
+					for (var j = 0; j < words.length; j++) {
+						var tspan = d3.select(this).append('tspan').text(words[j]);
+						if (j > 0) { tspan.attr('x', 0 ).attr('dy', '22'); }
+					}
+				};	
+				
+				svg3.append('g')
+					.attr("class","bars")
+					.selectAll('rect')
+					.data(bars)
+					.enter()
+					.append('rect')
+					.attr('class', "bars" )
+					.attr("width", x3.rangeBand())
+					.attr("x", function(d,i) { return margin.left + x3(d.WHA); })
+					.attr("y", function(d) { return y3(Math.max(0, d.value)); })
+					.attr("height", function(d,i) { return 0 + Math.abs(y3(d.value) - y3(0)); })
+					.style("stroke" , function(d,i){						
+						if ( d.WHA > 8 ) { return "#d73027"; }
+						else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+					})
+					.style("fill" , function(d,i){						
+						if ( d.WHA > 8 ) { return "#d73027"; }
+						else { return FDS.vars.legend[0][FDS.vars.legend[0].length-d.WHA ]; }						
+					})
+					.style("opacity" , "1.00");
+					
+
+			//}		
+		
+			return;
+		
+		}// end drawBarChart()
+		
+		
+		
+    </script>
+	
+	<script src="../lib/script.js" type="text/javascript"></script>
+	
+	
+</body>
+</html>
